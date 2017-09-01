@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd" >
+
+<Configuration>
+	<Properties>
+		<Property name="baseDir">C:/EDASSIST Logs</Property>
+	</Properties>
+	<Appenders>
+		<RollingFile name="ROOT_LOG" fileName="${baseDir}/root.log" append="true" filePattern="${baseDir}/$${date:yyyy-MM-dd}/root-%d{MM-dd-yyyy}-%i.log.gz">
+			<PatternLayout>
+				<pattern>%c %d{ISO8601} %p %m%n</pattern>
+			</PatternLayout>
+			<Policies>
+				<TimeBasedTriggeringPolicy />
+				<SizeBasedTriggeringPolicy size="250 MB" /> 
+			</Policies>
+			<DefaultRolloverStrategy max="2" />
+		</RollingFile>
+		<RollingFile name="EDASSIST_LOG" fileName="${baseDir}/edassist.log" append="true" filePattern="${baseDir}/$${date:yyyy-MM-dd}/edassist-%d{MM-dd-yyyy}-%i.log.gz">
+			<PatternLayout>
+				<pattern>%c %d{ISO8601} %p %m%n</pattern>
+			</PatternLayout>
+			<Policies>
+				<TimeBasedTriggeringPolicy />
+				<SizeBasedTriggeringPolicy size="250 MB" />
+			</Policies>
+			<DefaultRolloverStrategy max="20" />
+		</RollingFile>
+		<RollingFile name="RULES_LOG" fileName="${baseDir}/edassist-rules.log" append="true" filePattern="${baseDir}/$${date:yyyy-MM-dd}/edassist-rules-%d{MM-dd-yyyy}-%i.log.gz">
+			<PatternLayout>
+				<pattern>%c %d{ISO8601} %p %m%n</pattern>
+			</PatternLayout>
+			<Policies>
+				<TimeBasedTriggeringPolicy />
+				<SizeBasedTriggeringPolicy size="250 MB" />
+			</Policies>
+			<DefaultRolloverStrategy max="10" />
+		</RollingFile>
+		<RollingFile name="CRM_REST_LOG" fileName="${baseDir}/crm-rest-messages.log" append="true" filePattern="${baseDir}/$${date:yyyy-MM-dd}/crm-rest-messages-%d{MM-dd-yyyy}-%i.log.gz">
+			<PatternLayout>
+				<pattern>%c %d{ISO8601} %p %m%n</pattern>
+			</PatternLayout>
+			<Policies>
+				<TimeBasedTriggeringPolicy />
+				<SizeBasedTriggeringPolicy size="250 MB" />
+			</Policies>
+			<DefaultRolloverStrategy max="5" />
+		</RollingFile>
+	</Appenders>
+	<Loggers>
+		<Root level="info">
+			<AppenderRef ref="ROOT_LOG" />
+		</Root>
+		<Logger name="com.edassist" level="debug" additivity="false">
+			<AppenderRef ref="EDASSIST_LOG" />
+		</Logger>
+		<Logger name="httpclient.wire.content" level="debug" additivity="false">
+			<AppenderRef ref="CRM_REST_LOG" />
+		</Logger>
+		<Logger name="com.edassist.service.impl.CRMServiceImpl" level="debug" additivity="false">
+			<AppenderRef ref="CRM_REST_LOG"/>
+		</Logger>
+		<Logger name="com.edassist.service.impl.RulesServiceImpl" level="debug" additivity="false">
+			<AppenderRef ref="RULES_LOG"/>
+		</Logger>
+	</Loggers>
+</Configuration>

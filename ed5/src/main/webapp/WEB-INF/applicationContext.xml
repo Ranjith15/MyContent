@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="windows-1252"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx" xmlns:mongo="http://www.springframework.org/schema/data/mongo"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.2.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.2.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd 
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.2.xsd
+		http://www.springframework.org/schema/data/mongo
+		http://www.springframework.org/schema/data/mongo/spring-mongo-1.0.xsd">
+
+	<!--************************* -->
+	<!--*******JNDI CONF********* -->
+	<!--************************* -->
+	<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>classpath:tam.properties</value>
+				<value>classpath:mongo.properties</value>
+			</list>
+		</property>
+	</bean>
+
+	<context:annotation-config />
+
+	<bean id="tamsSpringHttpSessionListener" class="com.edassist.utils.TAMSSpringHttpSessionListener" autowire="byName">
+		<!-- Ref to other beans. Add more if needed -->
+	</bean>
+
+	<bean id="mongo" class="org.springframework.data.mongodb.core.MongoFactoryBean">
+		<property name="host" value="${content.serverName}" />
+	</bean>
+
+	<bean id="mongoCredentials" class="org.springframework.data.authentication.UserCredentials">
+		<constructor-arg name="username" value="${content.username}" />
+		<constructor-arg name="password" value="${content.password}" />
+	</bean>
+
+	<bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
+		<constructor-arg name="mongo" ref="mongo" />
+		<constructor-arg name="databaseName" value="${content.dbName}" />
+		<constructor-arg name="userCredentials" ref="mongoCredentials" />
+	</bean>
+
+	<mongo:db-factory id="mongoDbFactory" host="${content.serverName}" dbname="${content.dbName}" username="${content.username}" password="${content.password}" />
+	<mongo:mapping-converter id="converter" />
+
+	<bean name="gridFsTemplate" class="org.springframework.data.mongodb.gridfs.GridFsTemplate">
+		<constructor-arg ref="mongoDbFactory" />
+		<constructor-arg ref="converter" />
+	</bean>
+
+	<mongo:repositories base-package="com.edassist.mongodb.repository" />
+
+	<bean name="swaggerConfig" class="com.edassist.documentation.SwaggerConfig" />
+
+	<context:component-scan base-package="com.edassist.controller" />
+	<context:component-scan base-package="com.edassist.models" />
+	<context:component-scan base-package="com.edassist.service" />
+	<context:component-scan base-package="com.edassist.dao" />
+</beans>

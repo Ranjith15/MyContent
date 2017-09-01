@@ -1,0 +1,13 @@
+*.project
+*.factorypath
+.DS_Store
+ed5/src/main/webapp/web/bower_components/
+ed5/src/main/webapp/web/node_modules/
+ed5/src/main/webapp/web/node/
+ed5/src/main/webapp/web/dist/
+ed5/target/
+.metadata/
+Servers/
+.recommenders/
+ed5/bower_components/
+*.prefs
